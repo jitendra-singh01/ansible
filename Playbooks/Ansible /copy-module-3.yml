@@ -1,0 +1,18 @@
+---
+- hosts: all
+  tasks: 
+  - name: Upload a file to the targets system
+    copy:
+     src: /etc/hosts.sh
+     dest: /mnt/hosts-new.sh
+     mode: 0755
+  - name: if line not there than add it
+    lineinfile:
+     state: present
+     dest: /mnt/hosts-new.sh
+     line: HOST1={{ansible_hostname}}
+     line: echo "{{ansible_hostname}} {{discovered_interpreter_python}}"
+  - name: Run the script
+    shell: /mnt/hosts-new.sh
+    register: output
+  - debug: msg="stdout={{output}}"
